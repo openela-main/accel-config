@@ -1,0 +1,36 @@
+diff --color -ur idxd-config-accel-config-v3.4.8/test/dsa_user_test_runner.sh idxd-config-accel-config-v3.4.8-new/test/dsa_user_test_runner.sh
+--- idxd-config-accel-config-v3.4.8/test/dsa_user_test_runner.sh	2022-09-21 14:16:06.000000000 -0700
++++ idxd-config-accel-config-v3.4.8-new/test/dsa_user_test_runner.sh	2022-10-06 16:36:02.838178412 -0700
+@@ -14,7 +14,7 @@
+ 
+ [ ! -f "$DSATEST" ] && echo "fail: $LINENO" && exit 1
+ 
+-check_min_kver "5.6" || do_skip "kernel does not support idxd"
++check_min_kver "4.18" || do_skip "kernel does not support idxd"
+ 
+ # skip if no pasid support as dsa_test does not support operation w/o pasid yet.
+ [ ! -f "/sys/bus/dsa/devices/$DSA/pasid_enabled" ] && echo "No SVM support" && exit "$EXIT_SKIP"
+diff --color -ur idxd-config-accel-config-v3.4.8/test/iaa_user_test_runner.sh idxd-config-accel-config-v3.4.8-new/test/iaa_user_test_runner.sh
+--- idxd-config-accel-config-v3.4.8/test/iaa_user_test_runner.sh	2022-09-21 14:16:06.000000000 -0700
++++ idxd-config-accel-config-v3.4.8-new/test/iaa_user_test_runner.sh	2022-10-06 16:35:43.989998045 -0700
+@@ -14,7 +14,7 @@
+ 
+ [ ! -f "$IAATEST" ] && echo "fail: $LINENO" && exit 1
+ 
+-check_min_kver "5.6" || do_skip "kernel does not support idxd"
++check_min_kver "4.18" || do_skip "kernel does not support idxd"
+ 
+ # skip if no pasid support as iaa_test does not support operation w/o pasid yet.
+ [ ! -f "/sys/bus/dsa/devices/$IAA/pasid_enabled" ] && echo "No SVM support" && exit "$EXIT_SKIP"
+diff --color -ur idxd-config-accel-config-v3.4.8/test/libaccfg.c idxd-config-accel-config-v3.4.8-new/test/libaccfg.c
+--- idxd-config-accel-config-v3.4.8/test/libaccfg.c	2022-09-21 14:16:06.000000000 -0700
++++ idxd-config-accel-config-v3.4.8-new/test/libaccfg.c	2022-10-06 16:36:31.090448787 -0700
+@@ -966,7 +966,7 @@
+ 	struct accfg_device *device;
+ 	struct log_ctx log_ctx;
+ 
+-	if (!accfg_test_attempt(test, KERNEL_VERSION(5, 6, 0)))
++	if (!accfg_test_attempt(test, KERNEL_VERSION(4, 18, 0)))
+ 		return EXIT_SKIP;
+ 
+ 	accfg_set_log_priority(ctx, loglevel);
