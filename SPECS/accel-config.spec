@@ -1,9 +1,8 @@
 %global	project_name	idxd-config
-%global	debug_package	%{nil}
 
 Name:		accel-config
-Version:	3.5.0
-Release:	1%{?dist}
+Version:	3.5.3
+Release:	2%{?dist}
 Summary:	Configure accelerator subsystem devices
 # The entire source code is under GPLv2 except for accel-config
 # library which is mostly LGPLv2.1, ccan/list which is BSD-MIT and
@@ -101,10 +100,18 @@ make check
 %files test
 %license Documentation/COPYING LICENSE_GPL_2_0
 %doc test/README.md
-%{_prefix}/lib/accel-config/test/*
+%{_libexecdir}/accel-config/test/*
 
 %changelog
-* Tue Oct 04 2022 Jerry Snitselaar <jsnitsel@redhat.com> - 3.4.8-1
+* Tue Apr 18 2023 Jerry Snitselaar <jsnitsel@redhat.com> - 3.5.3-2
+- Remove spec file variable that blocked debuginfo build
+Resolves: rhz#2153899
+
+* Tue Apr 18 2023 Jerry Snitselaar <jsnitsel@redhat.com> - 3.5.3-1
+- Rebase to the 3.5.3 release.
+Resolves: rhbz#2153899
+
+* Tue Oct 04 2022 Jerry Snitselaar <jsnitsel@redhat.com> - 3.5.0-1
 - Rebase to 3.5.0 release.
 Resolves: rhbz#2101609
 
