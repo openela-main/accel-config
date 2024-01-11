@@ -1,7 +1,7 @@
 %global	project_name	idxd-config
 
 Name:		accel-config
-Version:	3.5.0
+Version:	3.5.3
 Release:	1%{?dist}
 Summary:	Configure accelerator subsystem devices
 # The entire source code is under GPLv2 except for accel-config
@@ -100,9 +100,13 @@ make check
 %files test
 %license Documentation/COPYING LICENSE_GPL_2_0
 #%doc test/README.md
-%{_prefix}/lib/accel-config/test/*
+%{_libexecdir}/accel-config/test/*
 
 %changelog
+* Tue Apr 18 2023 Jerry Snitselaar <jsnitsel@redhat.com> - 3.5.3-1
+- Rebase to 3.5.3 release.
+resolves: rhbz#2153898
+
 * Sun Oct 16 2022 Jerry Snitselaar <jsnitsel@redhat.com> - 3.5.0-1
 - Rebase to the 3.5.0 release.
 resolves: rhbz#2101608
