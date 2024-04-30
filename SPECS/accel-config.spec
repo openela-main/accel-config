@@ -1,15 +1,13 @@
 %global	project_name	idxd-config
 
 Name:		accel-config
-Version:	3.5.3
+Version:	4.1.3
 Release:	2%{?dist}
 Summary:	Configure accelerator subsystem devices
-# The entire source code is under GPLv2 except for accel-config
-# library which is mostly LGPLv2.1, ccan/list which is BSD-MIT and
-# the rest of ccan which is CC0.
-License:	GPLv2 and LGPLv2+ and MIT and CC0
+License:	GPL-2.0-only
 URL:		https://github.com/intel/%{project_name}
 Source0:	%{URL}/archive/%{name}-v%{version}.tar.gz
+Patch0:		0001-accel-config-test-only-configure-ats_disable-if-supp.patch
 
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 BuildRequires:	gcc
@@ -18,6 +16,7 @@ BuildRequires:	asciidoc
 BuildRequires:	xmlto
 BuildRequires:	automake
 BuildRequires:	libtool
+BuildRequires:  openssl-devel
 BuildRequires:	pkgconfig
 BuildRequires:	pkgconfig(libkmod)
 BuildRequires:	pkgconfig(uuid)
@@ -36,7 +35,7 @@ Utility library for configuring the accelerator subsystem.
 
 %package devel
 Summary:	Development files for libaccfg
-License:	LGPLv2+
+License:	LGPL-2.1-only
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
 %description devel
@@ -46,9 +45,7 @@ developing applications that use %{name}.
 
 %package libs
 Summary:	Configuration library for accelerator subsystem devices
-# All source code of configuration library is LGPLv2.1, except
-# ccan/list which is BSD-MIT and the rest of ccan/ which is CC0.
-License:	LGPLv2+ and MIT and CC0
+License:	LGPL-2.1-only
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 
 %description libs
@@ -56,7 +53,7 @@ Libraries for %{name}.
 
 %package test
 Summary:        Tests for accel-config
-License:        GPLv2
+License:        GPL-2.0-only
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 
 %description test
@@ -103,6 +100,15 @@ make check
 %{_libexecdir}/accel-config/test/*
 
 %changelog
+* Wed Jan 17 2024 Jerry Snitselaar <jsnitsel@redhat.com> - 4.1.3-2
+- Fix SPDX tags
+Resolves: RHEL-15610
+
+* Fri Dec 01 2023 Jerry Snitselaar <jsnitsel@redhat.com> - 4.1.3-1
+- Rebase to 4.1.3 release
+- Update License tags to SPDX identifiers
+Resolves: RHEL-15610
+
 * Tue Apr 18 2023 Jerry Snitselaar <jsnitsel@redhat.com> - 3.5.3-2
 - Remove spec file variable that blocked debuginfo build
 Resolves: rhz#2153899
