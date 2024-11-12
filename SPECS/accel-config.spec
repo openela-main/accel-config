@@ -1,13 +1,17 @@
 %global	project_name	idxd-config
 
 Name:		accel-config
-Version:	4.1.3
+Version:	4.1.6
 Release:	2%{?dist}
 Summary:	Configure accelerator subsystem devices
 License:	GPL-2.0-only
 URL:		https://github.com/intel/%{project_name}
 Source0:	%{URL}/archive/%{name}-v%{version}.tar.gz
-Patch0:		0001-accel-config-test-only-configure-ats_disable-if-supp.patch
+# submitted upstream: https://github.com/intel/idxd-config/pull/62
+Patch0:		0001-accel-config-test-Don-t-attempt-to-disable-non-exist.patch
+# submitted upstream: https://github.com/intel/idxd-config/pull/63
+Patch1:		0002-accel-config-test-Make-verbose-logging-optional.patch
+Patch2:		0003-accel-config-test-Clean-up-typo.patch
 
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 BuildRequires:	gcc
@@ -16,7 +20,7 @@ BuildRequires:	asciidoc
 BuildRequires:	xmlto
 BuildRequires:	automake
 BuildRequires:	libtool
-BuildRequires:  openssl-devel
+BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig
 BuildRequires:	pkgconfig(libkmod)
 BuildRequires:	pkgconfig(uuid)
@@ -52,9 +56,9 @@ Requires:	%{name}%{?_isa} = %{version}-%{release}
 Libraries for %{name}.
 
 %package test
-Summary:        Tests for accel-config
-License:        GPL-2.0-only
-Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
+Summary:	Tests for accel-config
+License:	GPL-2.0-only
+Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
 %description test
 Tests for accel-config command.
@@ -100,6 +104,15 @@ make check
 %{_libexecdir}/accel-config/test/*
 
 %changelog
+* Wed May 01 2024 Jerry Snitselaar <jsnitsel@redhat.com> - 4.1.6-2
+- Fix faulty logic in dsa_user_test_runner device clean up.
+- Adds a couple of test clean ups as well.
+Resolves: RHEL-32451
+
+* Fri Mar 22 2024 Jerry Snitselaar <jsnitsel@redhat.com> - 4.1.6-1
+- Rebase to 4.1.6 release
+Resolves: RHEL-29910
+
 * Wed Jan 17 2024 Jerry Snitselaar <jsnitsel@redhat.com> - 4.1.3-2
 - Fix SPDX tags
 Resolves: RHEL-15610
