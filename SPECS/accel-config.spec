@@ -1,17 +1,12 @@
 %global	project_name	idxd-config
 
 Name:		accel-config
-Version:	4.1.6
-Release:	2%{?dist}
+Version:	4.1.8
+Release:	1%{?dist}
 Summary:	Configure accelerator subsystem devices
 License:	GPL-2.0-only
 URL:		https://github.com/intel/%{project_name}
 Source0:	%{URL}/archive/%{name}-v%{version}.tar.gz
-# submitted upstream: https://github.com/intel/idxd-config/pull/62
-Patch0:		0001-accel-config-test-Don-t-attempt-to-disable-non-exist.patch
-# submitted upstream: https://github.com/intel/idxd-config/pull/63
-Patch1:		0002-accel-config-test-Make-verbose-logging-optional.patch
-Patch2:		0003-accel-config-test-Clean-up-typo.patch
 
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 BuildRequires:	gcc
@@ -104,6 +99,10 @@ make check
 %{_libexecdir}/accel-config/test/*
 
 %changelog
+* Fri Sep 06 2024 Jerry Snitselaar <jsnitsel@redhat.com> - 4.1.8-1
+- Rebase to 4.1.8 release
+Resolves: RHEL-56316
+
 * Wed May 01 2024 Jerry Snitselaar <jsnitsel@redhat.com> - 4.1.6-2
 - Fix faulty logic in dsa_user_test_runner device clean up.
 - Adds a couple of test clean ups as well.
