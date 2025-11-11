@@ -1,0 +1,33 @@
+From b7faa04b92cd20576b7b7f096dee9cf2bbe79220 Mon Sep 17 00:00:00 2001
+From: "Sun, Yi" <yi.sun@intel.com>
+Date: Thu, 2 Jan 2025 16:44:34 +0800
+Subject: [PATCH] test/common: Conditionally remove the module
+'Content-type:text/plain'
+
+'rmmod iaa_crypo' may cause error in case no iaa_crypo loaded.
+Check it before removing, and always return 0 for clean up function.
+
+Signed-off-by: Yi Sun <yi.sun@intel.com>
+---
+ test/common | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/test/common b/test/common
+index fd9a3eebdc6b..7355c908ac15 100755
+--- a/test/common
++++ b/test/common
+@@ -189,7 +189,10 @@ _cleanup()
+ 	modprobe vfio_pci
+ 
+ 	disable_all
+-	rmmod iaa_crypto
++	lsmod | grep -wq iaa_crypto && {
++		rmmod iaa_crypto
++	}
++	return 0
+ }
+ 
+ # json2var
+-- 
+2.48.0
+

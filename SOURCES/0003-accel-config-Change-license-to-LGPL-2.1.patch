@@ -1,0 +1,67 @@
+From 6a2a45454e10c7dbbe031c07aea941eda01552aa Mon Sep 17 00:00:00 2001
+From: "Hentabli, Abdelrahim" <abdelrahim.hentabli@intel.com>
+Date: Wed, 4 Dec 2024 19:03:10 -0800
+Subject: [PATCH] accel-config: Change license to LGPL 2.1
+'Content-type:text/plain'
+
+Change license to LGPL 2.1
+
+Signed-off-by: Hentabli, Abdelrahim <abdelrahim.hentabli@intel.com>
+---
+ util/log.c   | 4 ++--
+ util/log.h   | 4 ++--
+ util/sysfs.c | 4 ++--
+ util/sysfs.h | 4 ++--
+ 4 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/util/log.c b/util/log.c
+index 1d94b17af1b3..f4f2cb31561a 100644
+--- a/util/log.c
++++ b/util/log.c
+@@ -1,5 +1,5 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/* Copyright(c) 2015-2019 Intel Corporation. All rights reserved. */
++/* SPDX-License-Identifier: LGPL-2.1 */
++/* Copyright(c) 2016-2025 Intel Corporation. All rights reserved. */
+ 
+ #include <syslog.h>
+ #include <stdlib.h>
+diff --git a/util/log.h b/util/log.h
+index 2734c94c28cd..645dc42f6b0e 100644
+--- a/util/log.h
++++ b/util/log.h
+@@ -1,5 +1,5 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/* Copyright(c) 2015-2019 Intel Corporation. All rights reserved. */
++/* SPDX-License-Identifier: LGPL-2.1 */
++/* Copyright(c) 2016-2025 Intel Corporation. All rights reserved. */
+ 
+ #ifndef __UTIL_LOG_H__
+ #define __UTIL_LOG_H__
+diff --git a/util/sysfs.c b/util/sysfs.c
+index 4f881ca8c329..83b2fc15e770 100644
+--- a/util/sysfs.c
++++ b/util/sysfs.c
+@@ -1,5 +1,5 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/* Copyright(c) 2015-2019 Intel Corporation. All rights reserved. */
++/* SPDX-License-Identifier: LGPL-2.1 */
++/* Copyright(c) 2014-2025 Intel Corporation. All rights reserved. */
+ 
+ #include <stdio.h>
+ #include <stdlib.h>
+diff --git a/util/sysfs.h b/util/sysfs.h
+index abd470159e04..21c37f4c17f4 100644
+--- a/util/sysfs.h
++++ b/util/sysfs.h
+@@ -1,5 +1,5 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/* Copyright(c) 2015-2019 Intel Corporation. All rights reserved. */
++/* SPDX-License-Identifier: LGPL-2.1 */
++/* Copyright(c) 2014-2025 Intel Corporation. All rights reserved. */
+ 
+ #ifndef __UTIL_SYSFS_H__
+ #define __UTIL_SYSFS_H__
+-- 
+2.48.0
+

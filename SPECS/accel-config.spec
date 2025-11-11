@@ -2,11 +2,27 @@
 
 Name:		accel-config
 Version:	4.1.8
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Configure accelerator subsystem devices
 License:	GPL-2.0-only
 URL:		https://github.com/intel/%{project_name}
 Source0:	%{URL}/archive/%{name}-v%{version}.tar.gz
+Patch0:		0001-dsa_test-Use-syscall-write-to-submit-descriptor.patch
+Patch1:		0002-Update-dsa_config_test_runner.sh.patch
+Patch2:		0003-accel-config-Change-license-to-LGPL-2.1.patch
+Patch3:		0004-accel-config-Add-options-for-subcommand-enable-disab.patch
+Patch4:		0005-accel-config-Refine-the-Usage-of-enable-disable-devi.patch
+Patch5:		0006-Add-decode-subcommand-info.patch
+Patch6:		0007-Doc-Add-document-for-new-added-subcommand-info.patch
+Patch7:		0008-accfg-enable.c-Remove-the-redundant-check.patch
+Patch8:		0009-iaa_test-Use-syscall-write-to-submit-descriptor.patch
+Patch9:		0010-accel_test-Setup-Memmap-for-Dedicated-workqueue.patch
+Patch10:	0011-test-common-Conditionally-remove-the-module.patch
+Patch11:	0012-test-Use-ENQCMD-for-Betch-Testing.patch
+Patch12:	0013-test-dsa-Fix-typo-chekcing-checking.patch
+Patch13:	0014-accfg-list-fix-typo-Momery-Memory.patch
+Patch14:	0015-Documentation-fix-typo-limt-limit.patch
+
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 BuildRequires:	gcc
 BuildRequires:	autoconf
@@ -98,6 +114,10 @@ make check
 %{_libexecdir}/accel-config/test/*
 
 %changelog
+* Mon Mar 17 2025 Jerry Snitselaar <jsnitsel@redhat.com> - 4.1.8-3
+- Update to current stable.
+  Resolves: RHEL-38576
+
 * Tue Oct 29 2024 Troy Dawson <tdawson@redhat.com> - 4.1.8-2
 - Bump release for October 2024 mass rebuild:
   Resolves: RHEL-64018
