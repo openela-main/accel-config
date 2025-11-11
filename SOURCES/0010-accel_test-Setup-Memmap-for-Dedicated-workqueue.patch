@@ -1,0 +1,29 @@
+From 5edcf2349fd1c31127c2e7370dff7b5184ab49bf Mon Sep 17 00:00:00 2001
+From: Yi Sun <yi.sun@intel.com>
+Date: Thu, 2 Jan 2025 14:39:48 +0800
+Subject: [PATCH] accel_test: Setup Memmap for Dedicated workqueue
+'Content-type:text/plain'
+
+If tests running via dedicated workqueues, it's necessary to use memmap.
+
+Signed-off-by: Yi Sun <yi.sun@intel.com>
+---
+ test/accel_test.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/test/accel_test.c b/test/accel_test.c
+index f23295c9f3fb..ea7cc3e64d40 100644
+--- a/test/accel_test.c
++++ b/test/accel_test.c
+@@ -91,7 +91,7 @@ static int acctest_setup_wq(struct acctest_context *ctx, struct accfg_wq *wq)
+ 		return -errno;
+ 	}
+ 
+-	if (force_enqcmd) {
++	if (force_enqcmd || accfg_wq_get_mode(wq) == ACCFG_WQ_DEDICATED) {
+ 		ctx->wq_reg = mmap(NULL, PAGE_SIZE, PROT_WRITE,
+ 		     MAP_SHARED | MAP_POPULATE, ctx->fd, 0);
+ 		if (ctx->wq_reg == MAP_FAILED) {
+-- 
+2.48.0
+

@@ -1,0 +1,146 @@
+From d12007de8ce229fc334e7fc7f49fa221d220c674 Mon Sep 17 00:00:00 2001
+From: Yi Sun <yi.sun@intel.com>
+Date: Mon, 28 Oct 2024 17:39:05 +0800
+Subject: [PATCH] accel-config: Add options for subcommand
+ enable/disable-device
+'Content-type:text/plain'
+
+For certain reasons, the user needs to batch enable or disable configured
+devices. Previously, the user would repeatedly call the 'disable-device'
+or 'enable-device' sub-command in a loop. The newly added 'all' 'dsa'
+'iax' options for 'disable-device' and 'enable-device' offers a more
+convenient solution.
+
+Example:
+-----------
+[root@test-machine]# accel-config disable-device all
+disable 1 device(s) dsa0
+dsa2 is in disabled state already, skipping...
+dsa4 is in disabled state already, skipping...
+dsa6 is in disabled state already, skipping...
+disable 2 device(s) iax1
+iax3 is in disabled state already, skipping...
+iax5 is in disabled state already, skipping...
+iax7 is in disabled state already, skipping...
+
+[root@test-machine]# accel-config config-wq dsa0/wq0.0 -g 0 -m dedicated -y user -n app1 -d user -p 10 -o 0
+[root@test-machine]# accel-config config-wq dsa2/wq2.0 -g 2 -m shared -y user -n app2 -d user -p 10 -o 0
+[root@test-machine]# accel-config config-engine dsa0/engine0.0 -g 0
+[root@test-machine]# accel-config config-engine dsa2/engine2.0 -g 2
+[root@test-machine]# accel-config enable-device all
+enable 1 device(s) dsa0
+enable 2 device(s) dsa2
+
+NEG cases:
+-----------
+[root@test-machine]# accel-config disable-device iax
+iax1 is in disabled state already, skipping...
+iax3 is in disabled state already, skipping...
+iax5 is in disabled state already, skipping...
+iax7 is in disabled state already, skipping...
+
+[root@test-machine]# accel-config disable-device dsa
+dsa0 is in disabled state already, skipping...
+dsa2 is in disabled state already, skipping...
+dsa4 is in disabled state already, skipping...
+dsa6 is in disabled state already, skipping...
+
+[root@test-machine]# accel-config disable-device ERR
+(return code 0)
+
+[root@test-machine]# accel-config enable-device all
+(return code 0)
+
+[root@test-machine]# accel-config enable-device dsa
+(return code 0)
+
+[root@test-machine]# accel-config enable-device iax
+(return code 0)
+
+-------
+- Change from v1 to v2:
+  - Remove redundant check.
+  - Change the dev parameter from hardcode to enum.
+  - Reword.
+
+Signed-off-by: Yi Sun <yi.sun@intel.com>
+---
+ accfg/enable.c | 43 +++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 41 insertions(+), 2 deletions(-)
+
+diff --git a/accfg/enable.c b/accfg/enable.c
+index c27fbffcf792..4e7d716ff95c 100644
+--- a/accfg/enable.c
++++ b/accfg/enable.c
+@@ -30,6 +30,12 @@ enum wq_action {
+ 	WQ_ACTION_DISABLE,
+ };
+ 
++enum dev_param {
++	DEV_PARAM_DSA = 1,
++	DEV_PARAM_IAX = 2,
++	DEV_PARAM_ALL = 3,
++};
++
+ static struct {
+ 	bool verbose;
+ 	bool force;
+@@ -91,6 +97,8 @@ static int device_action(int argc, const char **argv, const char *usage,
+ 	};
+ 	int i, rc = -EINVAL, success = 0;
+ 	enum accfg_device_state state;
++	struct accfg_device *device = NULL;
++	unsigned int bmap_dev = 0;
+ 
+ 	argc = parse_options(argc, argv, options, u, 0);
+ 
+@@ -101,13 +109,44 @@ static int device_action(int argc, const char **argv, const char *usage,
+ 		if (strcmp(argv[i], "all") == 0) {
+ 			argv[0] = "all";
+ 			argc = 1;
++			bmap_dev |= DEV_PARAM_ALL;
++			break;
++		}
++		if (strcmp(argv[i], "dsa") == 0) {
++			argv[0] = "dsa";
++			argc = 1;
++			bmap_dev |= DEV_PARAM_DSA;
++			break;
++		}
++		if (strcmp(argv[i], "iax") == 0) {
++			argv[0] = "iax";
++			argc = 1;
++			bmap_dev |= DEV_PARAM_IAX;
+ 			break;
+ 		}
+ 	}
+ 
+-	for (i = 0; i < argc; i++) {
+-		struct accfg_device *device;
++	if (bmap_dev) {
++		accfg_device_foreach(ctx, device) {
++			if (strstr(accfg_device_get_devname(device), "iax") &&
++				(bmap_dev & DEV_PARAM_IAX) == 0)
++				continue;
++			if (strstr(accfg_device_get_devname(device), "dsa") &&
++				(bmap_dev & DEV_PARAM_DSA) == 0)
++				continue;
++
++			rc = dev_action_switch(device, action);
++			if (rc == 0) {
++				success++;
++				fprintf(stderr, "%s %d device(s) %s\n",
++					action == DEV_ACTION_ENABLE ? "enabled" : "disabled",
++					success, accfg_device_get_devname(device));
++			}
++		}
++		return 0;
++	}
+ 
++	for (i = 0; i < argc; i++) {
+ 		if (parse_device_name(ctx, argv[i], &device)) {
+ 			if (param.verbose)
+ 				fprintf(stderr,
+-- 
+2.48.0
+

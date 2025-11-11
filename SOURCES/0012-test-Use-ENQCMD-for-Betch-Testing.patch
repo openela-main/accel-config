@@ -1,0 +1,43 @@
+From 2f15749789947060a88086ba0298036e216f8a8c Mon Sep 17 00:00:00 2001
+From: "Sun, Yi" <yi.sun@intel.com>
+Date: Thu, 2 Jan 2025 16:45:10 +0800
+Subject: [PATCH] test: Use ENQCMD for Betch Testing
+'Content-type:text/plain'
+
+The idxd tests are suggested to use syscall write to submit instead of
+ENQCMD. But so far the write function cannot handle batch tests.
+
+Use the option '-u' to force the batch tests using ENQCMD.
+This is likely a workaround, need to look into the write function of the
+cdev supporting the betch function.
+
+Signed-off-by: Yi Sun <yi.sun@intel.com>
+---
+ test/dsa_user_test_runner.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/test/dsa_user_test_runner.sh b/test/dsa_user_test_runner.sh
+index 2848feda68bb..937536597a22 100755
+--- a/test/dsa_user_test_runner.sh
++++ b/test/dsa_user_test_runner.sh
+@@ -124,7 +124,7 @@ test_op_batch()
+ 				-c 16 -f "$flag" t2000 "${VERBOSE}" -d "$DEV"
+ 			else
+ 			"$DSATEST" -w "$wq_mode_code" -l "$xfer_size" -o 0x1 -b "$opcode" \
+-				-c 16 -f "$flag" t2000 "${VERBOSE}"
++				-c 16 -f "$flag" t2000 "${VERBOSE}" -u
+ 			fi
+ 		done
+ 	done
+@@ -184,7 +184,7 @@ test_dif_op_batch()
+ 				-c 16 -f "$flag" t2000 "${VERBOSE}" -d "$DEV"
+ 			else
+ 			"$DSATEST" -w "$wq_mode_code" -l "$xfer_size" -o 0x1 -b "$opcode" \
+-				-c 16 -f "$flag" t2000 "${VERBOSE}"
++				-c 16 -f "$flag" t2000 "${VERBOSE}" -u
+ 			fi
+ 		done
+ 	done
+-- 
+2.48.0
+

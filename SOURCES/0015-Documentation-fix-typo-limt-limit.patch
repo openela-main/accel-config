@@ -1,0 +1,30 @@
+From c590717c85a34c2b85f9463bb38a67cdf2493501 Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.i.king@gmail.com>
+Date: Mon, 6 Jan 2025 12:50:24 +0000
+Subject: [PATCH] Documentation: fix typo "limt" -> "limit"
+'Content-type:text/plain'
+
+There is a typo in the accel-config-config-group.txt documentation,
+fix it.
+
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ Documentation/accfg/accel-config-config-group.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/accfg/accel-config-config-group.txt b/Documentation/accfg/accel-config-config-group.txt
+index ebd40bc2b4a0..8101aa09154d 100644
+--- a/Documentation/accfg/accel-config-config-group.txt
++++ b/Documentation/accfg/accel-config-config-group.txt
+@@ -40,7 +40,7 @@ OPTIONS
+ 
+ -l::
+ --use-read-buffer-limit=::
+-	toggle the enabling of read-buffer limt usage. use-read-buffer-limit should be
++	toggle the enabling of read-buffer limit usage. use-read-buffer-limit should be
+ 	either 0 or 1.
+ 
+ -a::
+-- 
+2.48.0
+

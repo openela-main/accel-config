@@ -1,0 +1,86 @@
+From dd55279f82ac6949b07632997028833c1107b441 Mon Sep 17 00:00:00 2001
+From: Yi Sun <yi.sun@intel.com>
+Date: Tue, 17 Dec 2024 15:45:59 +0800
+Subject: [PATCH] Doc: Add document for new added subcommand info
+'Content-type:text/plain'
+
+Signed-off-by: Yi Sun <yi.sun@intel.com>
+---
+ Documentation/accfg/Makefile.am           |  6 ++--
+ Documentation/accfg/accel-config-info.txt | 40 +++++++++++++++++++++++
+ 2 files changed, 44 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/accfg/accel-config-info.txt
+
+diff --git a/Documentation/accfg/Makefile.am b/Documentation/accfg/Makefile.am
+index 4d8d3125dee1..8b534c2e341f 100644
+--- a/Documentation/accfg/Makefile.am
++++ b/Documentation/accfg/Makefile.am
+@@ -30,7 +30,8 @@ man1_MANS = \
+ 	accel-config-disable-wq.1 \
+ 	accel-config-enable-wq.1 \
+ 	accel-config-enable-device.1 \
+-	accel-config-config-user-default.1
++	accel-config-config-user-default.1 \
++	accel-config-info.1
+ 
+ EXTRA_DIST = \
+ 	$(man1_MANS) \
+@@ -46,7 +47,8 @@ EXTRA_DIST = \
+ 	accel-config-disable-wq.txt \
+ 	accel-config-enable-wq.txt \
+ 	accel-config-enable-device.txt \
+-	accel-config-config-user-default.txt
++	accel-config-config-user-default.txt \
++	accel-config-info.txt
+ 
+ CLEANFILES = $(man1_MANS)
+ 
+diff --git a/Documentation/accfg/accel-config-info.txt b/Documentation/accfg/accel-config-info.txt
+new file mode 100644
+index 000000000000..c6630efb5a5d
+--- /dev/null
++++ b/Documentation/accfg/accel-config-info.txt
+@@ -0,0 +1,40 @@
++// SPDX-License-Identifier: GPL-2.0
++
++accel-config info(1)
++====================
++
++NAME
++----
++accel-config-info - dump more idxd device information.
++
++SYNOPSIS
++--------
++[verse]
++'accel-config info [-v]'
++
++EXAMPLE
++-------
++accel-config info -v
++
++dsa0 [active]
++
++00000000,00000000,00000000,00000000,00000000,00000000,0000007b,00bf07fd
++
++Batch[-] Drain[+] Memory Move[+] Fill[+] Compare[+] Compare Pattern[+] Create Delta Record[+] Apply Delta Record[+] Memory Copy with Dualcast[+] Translation Fetch[+] CRC Generation[+] Copy with CRC Generation[+] DIF Check[+] DIF Insert[+] DIF Strip[+] DIF Update[+] DIX Generate[+] Cache Flush[+] Update Window[+] Inter-Domain Momery Copy[+] Inter-Domain Fill[+] Inter-Domain Compare[+] Inter-Domain Compare Pattern[+] Inter-Domain Cache Flush[-]
++
++iax1
++
++00000000,00000000,00000000,00000000,00000000,004d001c,00000000,00000405
++
++Drain[+] Translation Fetch[+] Decrypt[-] Encrypt[-] Decompress[+] Compress[+] CRC64[+] Zdecompress32[-] Zdecompress16[-] Zdecompress8 [-] Zcompress32[-] Zcompress16[-] Zcompress8[-] Scan[+] Set Membership[-] Extract[+] Select[+] BLE Burst[-] Find Unique[-] Expand[+]
++
++OPTIONS
++-------
++-v:
++	Verbose mode. Print more information about the device.
++
++include::../copyright.txt[]
++
++SEE ALSO
++--------
++accel-config info(1)
+-- 
+2.48.0
+

@@ -1,0 +1,137 @@
+From 99405e8b438b1e9f4b41d94c6d29b657e3cd6ffb Mon Sep 17 00:00:00 2001
+From: Yi Sun <yi.sun@intel.com>
+Date: Tue, 1 Oct 2024 13:23:58 +0800
+Subject: [PATCH] dsa_test: Use syscall write to submit descriptor
+'Content-type:text/plain'
+
+Intel updated kernel driver to prevent the accelerators from being directly
+mapped into unprivileged user applications, because malicious may be
+able to cause corrupt memory.
+
+Align with the kernel change, write the descriptor to cdev instead of
+enqcmd by default when submit shared work queue descriptor. Meanwhile, retain
+the enqcmd way if force to use it with new option '-u'.
+
+More details refer to link:
+https://www.intel.com/content/www/us/en/security-center/advisory/intel-sa-01084.html
+
+Signed-off-by: Yi Sun <yi.sun@intel.com>
+---
+ test/accel_test.c | 31 +++++++++++++++++++++----------
+ test/accel_test.h |  1 +
+ test/dsa_test.c   |  6 +++++-
+ 3 files changed, 27 insertions(+), 11 deletions(-)
+
+diff --git a/test/accel_test.c b/test/accel_test.c
+index e7f0e8e1e323..f23295c9f3fb 100644
+--- a/test/accel_test.c
++++ b/test/accel_test.c
+@@ -18,6 +18,7 @@
+ 
+ unsigned int ms_timeout = 5000;
+ int debug_logging;
++int force_enqcmd = 0;
+ static int umwait_support;
+ 
+ static inline void cpuid(unsigned int *eax, unsigned int *ebx,
+@@ -90,11 +91,13 @@ static int acctest_setup_wq(struct acctest_context *ctx, struct accfg_wq *wq)
+ 		return -errno;
+ 	}
+ 
+-	ctx->wq_reg = mmap(NULL, PAGE_SIZE, PROT_WRITE,
+-			   MAP_SHARED | MAP_POPULATE, ctx->fd, 0);
+-	if (ctx->wq_reg == MAP_FAILED) {
+-		perror("mmap");
+-		return -errno;
++	if (force_enqcmd) {
++		ctx->wq_reg = mmap(NULL, PAGE_SIZE, PROT_WRITE,
++		     MAP_SHARED | MAP_POPULATE, ctx->fd, 0);
++		if (ctx->wq_reg == MAP_FAILED) {
++			perror("mmap");
++			return -errno;
++		}
+ 	}
+ 
+ 	return 0;
+@@ -295,14 +298,22 @@ struct task *acctest_alloc_task(struct acctest_context *ctx)
+ 	return tsk;
+ }
+ 
+-static int acctest_enqcmd(struct acctest_context *ctx, struct hw_desc *hw)
++static int acctest_desc_submit_swq(struct acctest_context *ctx, struct hw_desc *hw)
+ {
+ 	int retry_count = 0;
+ 	int ret = 0;
+ 
+ 	while (retry_count < 3) {
+-		if (!enqcmd(ctx->wq_reg, hw))
+-			break;
++		if (force_enqcmd) {
++			info("Submitting descriptor via ENQCMD\n");
++			if (!enqcmd(ctx->wq_reg, hw))
++				break;
++		} else {
++			info("Submitting descriptor via syscall write\n");
++			ret = write(ctx->fd, hw, sizeof(struct hw_desc));
++			if (ret == sizeof(struct hw_desc))
++				break;
++		}
+ 
+ 		info("retry\n");
+ 		retry_count++;
+@@ -535,7 +546,7 @@ void acctest_desc_submit(struct acctest_context *ctx, struct hw_desc *hw)
+ 	/* use MOVDIR64B for DWQ */
+ 	if (ctx->dedicated)
+ 		movdir64b(ctx->wq_reg, hw);
+-	else /* use ENQCMD for SWQ */
+-		if (acctest_enqcmd(ctx, hw))
++	else /* use ENQCMD or write for SWQ */
++		if (acctest_desc_submit_swq(ctx, hw))
+ 			usleep(10000);
+ }
+diff --git a/test/accel_test.h b/test/accel_test.h
+index 1402620bc5c5..7cdeca67d02e 100644
+--- a/test/accel_test.h
++++ b/test/accel_test.h
+@@ -48,6 +48,7 @@
+ 
+ extern unsigned int ms_timeout;
+ extern int debug_logging;
++extern int force_enqcmd;
+ 
+ struct task {
+ 	struct hw_desc *desc;
+diff --git a/test/dsa_test.c b/test/dsa_test.c
+index c5a2dda60725..ecadaf2f32bc 100644
+--- a/test/dsa_test.c
++++ b/test/dsa_test.c
+@@ -35,6 +35,7 @@ static void usage(void)
+ 	"-e              ; evl pattern <batch>:<desc><..>\n"
+ 	"                ; <bc_fault:bc_wr_fail:bd_fault:bd_fault_idx>:<desc_fault:cp_fault:cp_wr_fail:fence>:\n"
+ 	"-v              ; verbose\n"
++	"-u              ; use ENQCMD to submit descriptor\n"
+ 	"-h              ; print this message\n");
+ }
+ 
+@@ -849,7 +850,7 @@ int main(int argc, char *argv[])
+ 	struct evl_desc_list *edl = NULL;
+ 	char *edl_str = NULL;
+ 
+-	while ((opt = getopt(argc, argv, "e:w:l:f:o:b:c:d:n:t:p:vh")) != -1) {
++	while ((opt = getopt(argc, argv, "e:w:l:f:o:b:c:d:n:t:p:vuh")) != -1) {
+ 		switch (opt) {
+ 		case 'e':
+ 			edl_str = optarg;
+@@ -889,6 +890,9 @@ int main(int argc, char *argv[])
+ 		case 'v':
+ 			debug_logging = 1;
+ 			break;
++		case 'u':
++			force_enqcmd = 1;
++			break;
+ 		case 'h':
+ 			usage();
+ 			exit(0);
+-- 
+2.48.0
+

@@ -1,0 +1,45 @@
+From c16307ec6c4b9535b70e58af0350475ed86002c6 Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.i.king@gmail.com>
+Date: Mon, 6 Jan 2025 12:47:10 +0000
+Subject: [PATCH] accfg/list: fix typo "Momery" -> "Memory"
+'Content-type:text/plain'
+
+There is a typo in a literal string in the iax_op_code_name array,
+fix it. Also fix associated documentation that contains the same
+typo.
+
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ Documentation/accfg/accel-config-info.txt | 2 +-
+ accfg/list.c                              | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/accfg/accel-config-info.txt b/Documentation/accfg/accel-config-info.txt
+index c6630efb5a5d..3298e5c2c4b0 100644
+--- a/Documentation/accfg/accel-config-info.txt
++++ b/Documentation/accfg/accel-config-info.txt
+@@ -20,7 +20,7 @@ dsa0 [active]
+ 
+ 00000000,00000000,00000000,00000000,00000000,00000000,0000007b,00bf07fd
+ 
+-Batch[-] Drain[+] Memory Move[+] Fill[+] Compare[+] Compare Pattern[+] Create Delta Record[+] Apply Delta Record[+] Memory Copy with Dualcast[+] Translation Fetch[+] CRC Generation[+] Copy with CRC Generation[+] DIF Check[+] DIF Insert[+] DIF Strip[+] DIF Update[+] DIX Generate[+] Cache Flush[+] Update Window[+] Inter-Domain Momery Copy[+] Inter-Domain Fill[+] Inter-Domain Compare[+] Inter-Domain Compare Pattern[+] Inter-Domain Cache Flush[-]
++Batch[-] Drain[+] Memory Move[+] Fill[+] Compare[+] Compare Pattern[+] Create Delta Record[+] Apply Delta Record[+] Memory Copy with Dualcast[+] Translation Fetch[+] CRC Generation[+] Copy with CRC Generation[+] DIF Check[+] DIF Insert[+] DIF Strip[+] DIF Update[+] DIX Generate[+] Cache Flush[+] Update Window[+] Inter-Domain Memory Copy[+] Inter-Domain Fill[+] Inter-Domain Compare[+] Inter-Domain Compare Pattern[+] Inter-Domain Cache Flush[-]
+ 
+ iax1
+ 
+diff --git a/accfg/list.c b/accfg/list.c
+index 916451069d2c..519b7eb7ee3f 100644
+--- a/accfg/list.c
++++ b/accfg/list.c
+@@ -79,7 +79,7 @@ struct map_op_name iax_op_code_name[] = {
+ 	{0x17, "DIX Generate"},			\
+ 	{0x20, "Cache Flush"},			\
+ 	{0x21, "Update Window"},		\
+-	{0x23, "Inter-Domain Momery Copy"},	\
++	{0x23, "Inter-Domain Memory Copy"},	\
+ 	{0x24, "Inter-Domain Fill"},		\
+ 	{0x25, "Inter-Domain Compare"},		\
+ 	{0x26, "Inter-Domain Compare Pattern"},	\
+-- 
+2.48.0
+
